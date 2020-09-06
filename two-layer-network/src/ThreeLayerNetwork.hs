@@ -68,7 +68,7 @@ instance MonadFail m => Dataset m SincData Int (Float, Float) where
 -- | Datatype to represent the model parameters.
 -- The datatype is parameterized over the number of input, output, and hidden dimensions.
 -- Each 'Linear' datatype holds internal weight tensors for weight and bias.
-data TwoLayerNet (numIn :: Nat) (numOut :: Nat) (numHidden :: Nat)  (numHidden2 :: Nat) = TwoLayerNet
+data ThreeLayerNet (numIn :: Nat) (numOut :: Nat) (numHidden :: Nat)  (numHidden2 :: Nat) = ThreeLayerNet
   { linear1 :: Linear numIn numHidden DType Device, -- first linear layer
     linearM :: Linear numHidden numHidden2 DType Device, -- middle layer    
     linear2 :: Linear numHidden2 numOut DType Device -- second linear layer
@@ -78,11 +78,11 @@ data TwoLayerNet (numIn :: Nat) (numOut :: Nat) (numHidden :: Nat)  (numHidden2 
 -- | 'HasForward' instance used to define the batched forward pass of the model
 instance
   HasForward
-    (TwoLayerNet numIn numOut numHidden NumHidden2)
+    (ThreeLayerNet numIn numOut numHidden NumHidden2)
     (Tensor Device DType '[batchSize, numIn])
     (Tensor Device DType '[batchSize, numOut])
   where
-  forward TwoLayerNet {..} =
+  forward ThreeLayerNet {..} =
     -- call the linear forward function on the 'Linear' datatypes
     -- and sandwich a 'tanh' activation function in between
     forward linear2 . tanh . forward linearM . tanh . forward linear1
@@ -169,7 +169,7 @@ runMain = do
   _ <- putStrLn $ "Running v3 " ++ networkName
   model <-
     -- initialize the model
-    TwoLayerNet @1 @1 @NumHidden @NumHidden2
+    ThreeLayerNet @1 @1 @NumHidden @NumHidden2
       -- randomly initialize the weights and biases of the first linear layer
       <$> sample LinearSpec
       -- randomly initialize the weights and biases of the first linear layer
