@@ -166,7 +166,7 @@ type NumHidden2 = 20
 -- | Main program
 runMain :: IO ()
 runMain = do
-  _ <- putStrLn $ "Running v2 " ++ networkName
+  _ <- putStrLn $ "Running v3 " ++ networkName
   model <-
     -- initialize the model
     TwoLayerNet @1 @1 @NumHidden @NumHidden2

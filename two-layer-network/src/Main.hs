@@ -1,7 +1,9 @@
 module Main where
 
---import TypedNetwork
-import ThreeLayerNetwork
+import qualified TypedNetwork as TN
+import qualified ThreeLayerNetwork as TLN
 
 main :: IO ()
-main = runMain
+main = do
+    _ <- putStrLn "Running ThreeLayerNetwork"
+    TLN.runMain
