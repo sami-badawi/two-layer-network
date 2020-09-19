@@ -1,5 +1,7 @@
 module TypedNetwork where
 
+-- Original code example
+
 import qualified Control.Foldl as L
 import Control.Lens (element, view, (^?))
 import Control.Monad (ap, replicateM, void)

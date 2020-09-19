@@ -1,5 +1,7 @@
 module BaseNetwork where
 
+-- Refactored 3 layer network that is split into files
+
 import qualified Control.Foldl as L
 import Control.Lens (element, view, (^?))
 import Control.Monad (ap, replicateM, void)
@@ -46,8 +48,8 @@ type Device = '( 'CPU, 0)
 -- Each 'Linear' datatype holds internal weight tensors for weight and bias.
 data ThreeLayerNet (numIn :: Nat) (numOut :: Nat) (numHidden :: Nat)  (numHidden2 :: Nat) = ThreeLayerNet
   { linear1 :: Linear numIn numHidden DType Device, -- first linear layer
-    linearM :: Linear numHidden numHidden2 DType Device, -- middle layer    
-    linear2 :: Linear numHidden2 numOut DType Device -- second linear layer
+    linear2 :: Linear numHidden numHidden2 DType Device, -- middle layer    
+    linear3 :: Linear numHidden2 numOut DType Device -- second linear layer
   }
   deriving (Show, Generic, Parameterized)
 
@@ -61,7 +63,7 @@ instance
   forward ThreeLayerNet {..} =
     -- call the linear forward function on the 'Linear' datatypes
     -- and sandwich a 'tanh' activation function in between
-    forward linear2 . tanh . forward linearM . tanh . forward linear1
+    forward linear3 . tanh . forward linear2 . tanh . forward linear1
   forwardStoch = (pure .) . forward
 
 -- | Train the model for one epoch
@@ -136,7 +138,7 @@ infer model (P.Select inputs) = P.Select $ inputs P.>-> P.map (\x -> (x, forward
 type BatchSize = 100
 
 -- | Number of hidden layers
-type NumHidden = 20
+type NumHidden1 = 20
 type NumHidden2 = 20
 
 -- | Main program
@@ -145,7 +147,7 @@ runMain = do
   _ <- putStrLn $ "Running v3 " ++ networkName
   model <-
     -- initialize the model
-    ThreeLayerNet @1 @1 @NumHidden @NumHidden2
+    ThreeLayerNet @1 @1 @NumHidden1 @NumHidden2
       -- randomly initialize the weights and biases of the first linear layer
       <$> sample LinearSpec
       -- randomly initialize the weights and biases of the first linear layer

@@ -68,3 +68,4 @@ executable two-layer-network
   import:              config
   hs-source-dirs:      src
   main-is:             Main.hs
+  other-modules:       BaseNetwork, SincData, ThreeLayerNetwork, TypedNetwork
